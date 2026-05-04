@@ -1,0 +1,22 @@
+{
+  "name": "zt-provisioner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "3.1039.0",
+    "@aws-sdk/client-kms": "3.1039.0",
+    "@coinbase/cdp-sdk": "1.48.2",
+    "bs58": "^6.0.0",
+    "ethers": "6.16.0",
+    "express": "4.22.1",
+    "viem": "2.48.4"
+  },
+  "overrides": {
+    "axios": "1.15.2"
+  }
+}

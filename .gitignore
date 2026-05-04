@@ -1,0 +1,46 @@
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# env/secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+secrets.json
+tailscale-auth-key
+cdp_api_key.json
+cdp_wallet_secret.txt
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform/terraform.tfvars.example
+crash.log
+crash.*.log
+
+# Node
+node_modules/
+npm-debug.log*
+provisioner/dist/
+coverage/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# logs/artifacts
+logs/
+out/
+evidence/
+artifacts/
+contracts/artifacts/
+tmp/
+*.zip

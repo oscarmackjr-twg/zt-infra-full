@@ -1,0 +1,147 @@
+{
+  "project": "zt-infra-v2",
+  "bootstrap": {
+    "status": "ok",
+    "current_step": "10/10 write verification log",
+    "failed_step": "",
+    "self_healing_attempts": [
+      {
+        "action": "dpkg-configure",
+        "status": "ok",
+        "ts": "2026-04-30T04:10:19+00:00"
+      },
+      {
+        "action": "apt-update",
+        "status": "ok",
+        "ts": "2026-04-30T04:10:44+00:00"
+      },
+      {
+        "action": "dpkg-configure",
+        "status": "ok",
+        "ts": "2026-04-30T04:10:44+00:00"
+      },
+      {
+        "action": "apt-install-base-packages",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:01+00:00"
+      },
+      {
+        "action": "download-aws-cli",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:02+00:00"
+      },
+      {
+        "action": "aws-cli-zip-present",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:02+00:00"
+      },
+      {
+        "action": "install-aws-cli",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:07+00:00"
+      },
+      {
+        "action": "snap-install-ssm-agent",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:09+00:00"
+      },
+      {
+        "action": "wait-service-snap.amazon-ssm-agent.amazon-ssm-agent.service",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:10+00:00"
+      },
+      {
+        "action": "install-ssm-agent",
+        "status": "ok-snap",
+        "ts": "2026-04-30T04:12:10+00:00"
+      },
+      {
+        "action": "wait-service-nginx",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:11+00:00"
+      },
+      {
+        "action": "install-tailscale",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:24+00:00"
+      },
+      {
+        "action": "wait-service-tailscaled",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:25+00:00"
+      },
+      {
+        "action": "wait-service-nginx",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:26+00:00"
+      },
+      {
+        "action": "npm-install-provisioner",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:35+00:00"
+      },
+      {
+        "action": "restart-zt-provisioner",
+        "status": "attempt",
+        "ts": "2026-04-30T04:12:36+00:00"
+      },
+      {
+        "action": "wait-service-zt-provisioner",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:36+00:00"
+      },
+      {
+        "action": "tailscale-up",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:43+00:00"
+      },
+      {
+        "action": "tailscale-serve-detect",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:48+00:00"
+      },
+      {
+        "action": "wait-service-nginx",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:49+00:00"
+      },
+      {
+        "action": "wait-service-zt-provisioner",
+        "status": "ok",
+        "ts": "2026-04-30T04:12:50+00:00"
+      }
+    ]
+  },
+  "tailscale": {
+    "version": "1.96.4",
+    "hostname": "ip-10-42-10-178",
+    "dnsName": "zt-infra-v2-ip-10-42-10-178.tail01e36c.ts.net.",
+    "online": true
+  },
+  "serve_syntax": {
+    "working": "current-set-path",
+    "errors": [],
+    "status": {
+      "TCP": {
+        "443": {
+          "HTTPS": true
+        }
+      },
+      "Web": {
+        "zt-infra-v2-ip-10-42-10-178.tail01e36c.ts.net:443": {
+          "Handlers": {
+            "/": {
+              "Proxy": "http://127.0.0.1:80"
+            }
+          }
+        }
+      }
+    }
+  },
+  "services": {
+    "nginx": "active",
+    "zt_provisioner": "active"
+  },
+  "test_url": "https://zt-infra-v2-ip-10-42-10-178.tail01e36c.ts.net",
+  "verified_at": "2026-04-30T04:12:50+00:00"
+}

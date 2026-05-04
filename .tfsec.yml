@@ -1,0 +1,5 @@
+exclude:
+  # aws-ec2-no-public-ip-subnet / aws-ec2-no-public-ip: public IP is used only
+  # for outbound internet in a no-ingress security group.
+  - aws-ec2-no-public-ip-subnet
+  - aws-ec2-no-public-ip

@@ -1,0 +1,72 @@
+name: zt-infra-v2-ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_live:
+        description: "Run live AWS integration tests"
+        required: true
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "20"
+      - run: pip install -r requirements-dev.txt
+      - run: terraform fmt -check -recursive terraform
+      - run: cd terraform && terraform init -backend=false && terraform validate
+      - run: python -m pytest tests/test_static_repo.py tests/test_bootstrap_simulation.py
+      - uses: bridgecrewio/checkov-action@9201a8e6eaa919e3444d7c4ca691896efde4f033
+        with:
+          directory: terraform
+          config_file: .checkov.yml
+      - uses: aquasecurity/tfsec-action@b466648d6e39e7c75324f25d83891162a721f2d6
+        with:
+          working_directory: terraform
+          config_file: .tfsec.yml
+
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: github/codeql-action/init@e46ed2cbd01164d986452f91f178727624ae40d7
+        with:
+          languages: javascript-typescript,python
+      - uses: github/codeql-action/analyze@e46ed2cbd01164d986452f91f178727624ae40d7
+
+  sbom:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+
+  live:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_live == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - run: echo "Configure AWS credentials before enabling live CI. Prefer local Dark Factory runs for MVP."

@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "actor": "demo-agent",
+  "action": "aws.ec2.terminate_instances",
+  "resource": "",
+  "decision": "deny",
+  "reason": "Agents may not terminate EC2 instances in the Dark Factory MVP.",
+  "audit": {
+    "timestamp": "2026-04-30T13:16:18.717Z",
+    "previous_hash": "13500df28da907711c64352bb7c6831368536acb8bea1b95acbf035f871fa125",
+    "current_hash": "fc6ff98e32fe842dfac021a2c571370de10f0e477742a00c314e8b5f7dce6986",
+    "kms_signature": {
+      "algorithm": "ECDSA_SHA_256",
+      "key_id": "arn:aws:kms:us-east-2:<AWS_ACCOUNT_ID>:key/<KMS_KEY_ID>",
+      "signature": "MEUCICvrl8LMlbX3jenX435JOSCh5QrPi9uN/HtJcFl03Ud5AiEAu4gzkJWfw1PzxCIveFAvqAdASclbtAyIQ7+UBmkHe5A="
+    }
+  }
+}

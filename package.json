@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "thirdweb": "^5.119.4"
+  },
+  "overrides": {
+    "axios": "1.15.2",
+    "uuid": "14.0.0"
+  }
+}

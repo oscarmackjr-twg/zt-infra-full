@@ -1,0 +1,10 @@
+framework:
+  - terraform
+quiet: true
+compact: true
+download-external-modules: false
+skip-check:
+  # CKV_AWS_88: The MVP allows an instance public IP only for outbound internet
+  # from a no-ingress security group. There is no SSH, HTTP, or other inbound
+  # rule; operator access is SSM and Tailscale only.
+  - CKV_AWS_88

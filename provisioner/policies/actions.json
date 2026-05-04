@@ -1,0 +1,35 @@
+{
+  "defaultDecision": "deny",
+  "allow": [
+    {
+      "action": "zt.status.read",
+      "reason": "Read-only health/status inspection is allowed."
+    }
+  ],
+  "deny": [
+    {
+      "action": "aws.ec2.terminate_instances",
+      "reason": "Agents may not terminate EC2 instances in the Dark Factory MVP."
+    },
+    {
+      "action": "aws.iam.*",
+      "reason": "Agents may not mutate IAM in the Dark Factory MVP."
+    },
+    {
+      "action": "aws.secretsmanager.get_secret_value",
+      "reason": "Agents may not read secrets directly; secrets are only consumed by bootstrap."
+    },
+    {
+      "action": "mcp.github.create_pull_request",
+      "reason": "MCP agents may not create GitHub pull requests without explicit approval."
+    },
+    {
+      "action": "openai.agents.tool.github.create_pull_request",
+      "reason": "OpenAI Agents SDK tools may not create GitHub pull requests without explicit approval."
+    },
+    {
+      "action": "a2a.github_agent.send_message",
+      "reason": "External A2A agents may not request GitHub write actions without explicit approval."
+    }
+  ]
+}

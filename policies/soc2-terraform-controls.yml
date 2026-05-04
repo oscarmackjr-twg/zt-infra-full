@@ -1,0 +1,89 @@
+version: 1
+project: zt-infra-v2
+controls:
+  - id: CC6.1
+    title: Logical access is restricted to authorized paths.
+    terraform_enforcement:
+      - aws_security_group.instance ingress must remain empty.
+      - aws_default_security_group.locked_down ingress and egress must remain empty.
+      - aws_iam_role_policy_attachment.ssm must keep AmazonSSMManagedInstanceCore attached.
+    policy_checks:
+      - tests/test_static_repo.py::test_no_public_ingress_in_terraform
+      - tests/test_live_integration.py::test_no_public_ingress_and_instance_security_posture
+    evidence:
+      - evidence/*/security-groups.json
+      - evidence/*/ssm-instance-information.json
+  - id: CC6.6
+    title: Data is protected with encryption and hardened instance metadata.
+    terraform_enforcement:
+      - aws_instance.provisioner root_block_device encrypted must remain true.
+      - aws_instance.provisioner metadata_options http_tokens must remain required.
+      - aws_kms_key.vpc_flow_logs enable_key_rotation must remain true.
+    policy_checks:
+      - tests/test_static_repo.py::test_terraform_security_guardrails_are_explicit
+      - tests/test_live_integration.py::test_no_public_ingress_and_instance_security_posture
+    evidence:
+      - evidence/*/ec2-instance.json
+      - evidence/*/terraform-outputs.json
+  - id: CC7.2
+    title: Security events are logged for monitoring and investigation.
+    terraform_enforcement:
+      - aws_flow_log.vpc must capture ALL traffic.
+      - aws_cloudwatch_log_group.vpc_flow_logs must retain encrypted flow logs.
+      - module.cloudwatch must create a VPC reject metric filter.
+    policy_checks:
+      - make policy
+      - tests/test_static_repo.py::test_compliance_controls_are_wired
+    evidence:
+      - evidence/*/cloudwatch-dashboard.json
+      - evidence/*/policy.out
+  - id: CC7.3
+    title: Threat detection and alerting are enabled.
+    terraform_enforcement:
+      - module.guardduty must enable a regional GuardDuty detector.
+      - module.cloudwatch must create status and VPC reject alarms.
+      - module.cloudwatch must publish a continuous compliance dashboard.
+    policy_checks:
+      - tests/test_static_repo.py::test_compliance_controls_are_wired
+    evidence:
+      - evidence/*/guardduty-detector.json
+      - evidence/*/cloudwatch-dashboard.json
+  - id: CC7.4
+    title: Unauthorized agent actions are blocked and logged.
+    terraform_enforcement:
+      - aws_kms_key.audit_signing must provide asymmetric KMS signatures for action audit records.
+      - aws_cloudwatch_log_group.agent_audit must retain encrypted agent action audit records.
+      - aws_iam_role_policy.agent_audit must allow only kms:Sign and audit log writes needed by the provisioner.
+      - zt-provisioner must run as a non-root systemd service with sandbox hardening.
+    policy_checks:
+      - provisioner npm test
+      - tests/test_static_repo.py::test_agent_control_plane_is_wired
+      - tests/test_live_integration.py::test_agent_control_plane_blocks_and_signs_unauthorized_action
+      - tests/test_live_integration.py::test_agent_control_plane_systemd_sandbox_is_enabled
+    evidence:
+      - evidence/*/agent-audit-kms-key.json
+      - evidence/*/agent-audit-log-events.json
+  - id: CC8.1
+    title: Changes are controlled and validated before release.
+    terraform_enforcement:
+      - make static must run Terraform format, init, validate, and static tests.
+      - make policy must run configured Terraform policy scanners when installed.
+      - make github-ready must block publish-unsafe generated or secret files.
+    policy_checks:
+      - make static
+      - make policy
+      - make github-ready
+    evidence:
+      - evidence/*/policy.out
+  - id: A1.2
+    title: Availability is monitored and recoverable through managed access.
+    terraform_enforcement:
+      - aws_cloudwatch_metric_alarm.ec2_status_check_failed must monitor EC2 health.
+      - SSM access must be available without SSH.
+      - bootstrap must write /var/log/zt-verify.json on success and failure.
+    policy_checks:
+      - make live
+      - make fetch-logs
+    evidence:
+      - evidence/*/ssm-instance-information.json
+      - evidence/*/zt-verify.json
