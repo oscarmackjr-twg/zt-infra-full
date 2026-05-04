@@ -123,7 +123,7 @@ def test_no_public_ingress_in_terraform():
     assert "encrypted   = true" in main_tf
     assert "revoke_rules_on_delete = true" in main_tf
     assert "aws_flow_log" in main_tf
-    assert "retention_in_days = 30" in main_tf
+    assert "retention_in_days = 365" in main_tf
     assert "aws_kms_key" in main_tf
     assert "enable_key_rotation     = true" in main_tf
     assert "kms_key_id        = aws_kms_key.vpc_flow_logs.arn" in main_tf

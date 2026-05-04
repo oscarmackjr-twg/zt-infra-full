@@ -8,3 +8,7 @@ skip-check:
   # from a no-ingress security group. There is no SSH, HTTP, or other inbound
   # rule; operator access is SSM and Tailscale only.
   - CKV_AWS_88
+  # CKV2_AWS_3: This single-account reference implementation enables GuardDuty
+  # in the deployment region. Organization-wide delegated admin is an enterprise
+  # landing-zone responsibility outside this repo.
+  - CKV2_AWS_3
