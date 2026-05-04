@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "3.1039.0",
-    "@aws-sdk/client-kms": "3.1039.0",
+    "@aws-sdk/client-kms": "3.1042.0",
     "@coinbase/cdp-sdk": "1.48.2",
     "bs58": "^6.0.0",
     "ethers": "6.16.0",
