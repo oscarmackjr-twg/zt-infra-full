@@ -63,7 +63,7 @@ resource "aws_vpc" "main" {
 
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/${var.project_name}/flow-logs"
-  retention_in_days = 30
+  retention_in_days = 365
   kms_key_id        = aws_kms_key.vpc_flow_logs.arn
 
   tags = {
@@ -258,7 +258,7 @@ resource "aws_kms_alias" "agent_audit_logs" {
 
 resource "aws_cloudwatch_log_group" "agent_audit" {
   name              = "/aws/zt/${var.project_name}/agent-audit"
-  retention_in_days = 90
+  retention_in_days = 365
   kms_key_id        = aws_kms_key.agent_audit_logs.arn
 
   tags = {
@@ -289,7 +289,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.42.10.0/24"
   availability_zone       = "${var.aws_region}a"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "${var.project_name}-public-a"
@@ -461,6 +461,8 @@ resource "aws_instance" "provisioner" {
   iam_instance_profile        = aws_iam_instance_profile.instance.name
   key_name                    = aws_key_pair.operator.key_name
   associate_public_ip_address = true
+  ebs_optimized               = true
+  monitoring                  = true
 
   user_data_base64 = base64gzip(templatefile("${path.module}/user-data.sh.tpl", {
     aws_region                  = var.aws_region
