@@ -1,6 +1,6 @@
-# AGENTS.md — Codex Operating Guide for zt-infra-v2
+# AGENTS.md — Codex Operating Guide for zt-infra-full
 
-You are working in the `zt-infra-v2` repository. Treat this repo as a Dark Factory MVP: it must be buildable, deployable, verifiable, and recoverable with minimal operator intervention and without logging into the AWS Console.
+You are working in the `zt-infra-full` repository. Treat this repo as the full AWS reference implementation of the ZT-Infra agent authorization control plane: it must be buildable, deployable, verifiable, and recoverable with minimal operator intervention and without logging into the AWS Console.
 
 ## Mission
 
