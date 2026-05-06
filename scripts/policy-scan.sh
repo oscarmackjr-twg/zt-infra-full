@@ -9,9 +9,16 @@ missing=0
 run_or_warn() {
   local tool="$1"
   shift
-  if command -v "$tool" >/dev/null 2>&1; then
+  local tool_path=""
+  if [[ -x "$ROOT_DIR/.venv/bin/$tool" ]]; then
+    tool_path="$ROOT_DIR/.venv/bin/$tool"
+  elif command -v "$tool" >/dev/null 2>&1; then
+    tool_path="$tool"
+  fi
+
+  if [[ -n "$tool_path" ]]; then
     echo "==> Running $tool $*"
-    "$tool" "$@"
+    "$tool_path" "$@"
   else
     echo "WARN: $tool is not installed; skipping. Install it to enforce local policy checks." >&2
     missing=1
