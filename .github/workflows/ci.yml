@@ -1,4 +1,4 @@
-name: zt-infra-v2-ci
+name: zt-infra-full-ci
 
 on:
   push:

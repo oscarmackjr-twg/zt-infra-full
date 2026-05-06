@@ -1,4 +1,7 @@
 {
+  "name": "zt-infra-full",
+  "private": true,
+  "license": "Apache-2.0",
   "dependencies": {
     "thirdweb": "^5.119.4"
   },
