@@ -12,8 +12,8 @@ run_or_warn() {
   local tool_path=""
   if [[ -x "$ROOT_DIR/.venv/bin/$tool" ]]; then
     tool_path="$ROOT_DIR/.venv/bin/$tool"
-  elif command -v "$tool" >/dev/null 2>&1; then
-    tool_path="$tool"
+  elif tool_path="$(command -v "$tool" 2>/dev/null)"; then
+    :
   fi
 
   if [[ -n "$tool_path" ]]; then
