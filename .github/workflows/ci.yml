@@ -31,7 +31,7 @@ jobs:
       - run: terraform fmt -check -recursive terraform
       - run: cd terraform && terraform init -backend=false && terraform validate
       - run: python -m pytest tests/test_static_repo.py tests/test_bootstrap_simulation.py
-      - uses: bridgecrewio/checkov-action@9201a8e6eaa919e3444d7c4ca691896efde4f033
+      - uses: bridgecrewio/checkov-action@4048c972aae68d0b983a48bb3479aab2d877b898
         with:
           directory: terraform
           config_file: .checkov.yml
