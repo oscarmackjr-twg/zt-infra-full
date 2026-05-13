@@ -14,16 +14,13 @@ new resources, or malformed requests fail closed until reviewed.
 ### Cedar-style example
 
 ```cedar
-// Default posture: no permit policy exists for unknown actions.
-// The authorizer should return deny unless another explicit permit matches.
-forbid(
-  principal,
-  action,
-  resource
-) when {
-  !(principal has trusted && principal.trusted)
-};
+// Default posture: omit broad permit policies.
+// The authorizer returns deny unless a later, explicit permit matches
+// the principal, action, and resource attributes.
 ```
+
+In Cedar, the deny-by-default behavior comes from the absence of a matching
+`permit`; avoid adding redundant boolean guards that restate the default.
 
 ### OPA/Rego example
 
@@ -65,7 +62,7 @@ package ztinfra.authz
 default allow := false
 
 allow if {
-  input.actor.role == "support_agent"
+  input.actor.attributes.role == "support_agent"
   input.action == "ticket.read"
   input.resource.classification == "internal"
   input.resource.environment == "staging"
@@ -75,11 +72,16 @@ allow if {
 ## Adapter contract mapping
 
 A ZT-Infra adapter can send these policy inputs as the same fields used by the
-`POST /actions` contract:
+`POST /actions` contract. Actor attributes are grouped under `actor.attributes`
+so policy engines can map them consistently onto Cedar principal attributes or
+OPA input fields:
 
 ```json
 {
-  "actor": { "id": "support-review-agent", "role": "support_agent" },
+  "actor": {
+    "id": "support-review-agent",
+    "attributes": { "role": "support_agent" }
+  },
   "action": "ticket.read",
   "resource": {
     "classification": "internal",
@@ -93,7 +95,7 @@ The decision response should keep the explanation concise, for example:
 ```json
 {
   "decision": "allow",
-  "reason": "support_agent may read internal staging tickets"
+  "reason": "support_agent actor attribute may read internal staging tickets"
 }
 ```
 
