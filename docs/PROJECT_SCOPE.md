@@ -42,7 +42,7 @@ The useful work is at the integration boundary:
 - LangGraph decorators that wrap tool calls automatically;
 - MCP middleware before tool dispatch;
 - A2A peer attestation hooks;
-- OPA and Cedar policy templates for common agent ABAC patterns;
+- OPA and Cedar policy templates for common agent ABAC patterns (see [Policy Examples](./POLICY_EXAMPLES.md));
 - SPIFFE/SPIRE actor binding;
 - adapter conformance tests.
 
