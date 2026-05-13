@@ -21,7 +21,7 @@ forbid(
   action,
   resource
 ) when {
-  !(principal has trusted && principal.trusted == true)
+  !(principal has trusted && principal.trusted)
 };
 ```
 
@@ -79,7 +79,7 @@ A ZT-Infra adapter can send these policy inputs as the same fields used by the
 
 ```json
 {
-  "actor": "support-review-agent",
+  "actor": { "id": "support-review-agent", "role": "support_agent" },
   "action": "ticket.read",
   "resource": {
     "classification": "internal",
