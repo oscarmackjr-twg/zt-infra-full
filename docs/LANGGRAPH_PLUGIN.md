@@ -13,10 +13,24 @@ LangGraph models agent workflows as graphs with shared state, nodes that perform
 
 ## Install
 
-The plugin itself uses only the Python standard library. LangGraph is optional for local tests but required to run the example graph:
+The plugin itself uses only the Python standard library. From a local checkout,
+install the adapter in editable mode:
+
+```bash
+python -m pip install -e .
+```
+
+LangGraph is optional for local tests but required to run the example graph:
 
 ```bash
 pip install langgraph
+```
+
+If you want the adapter and LangGraph runtime together, install the optional
+extra from the repository root:
+
+```bash
+python -m pip install -e ".[langgraph]"
 ```
 
 ## Minimal Usage
