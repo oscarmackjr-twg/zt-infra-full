@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zt-infra-langgraph"
+version = "0.1.0"
+description = "LangGraph adapter helpers for the ZT-Infra action authorization control plane."
+readme = "docs/LANGGRAPH_PLUGIN.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "ZT-Infra contributors" }
+]
+dependencies = []
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://github.com/oscarmackjr-twg/zt-infra-full"
+
+[project.optional-dependencies]
+langgraph = [
+  "langgraph>=0.2"
+]
+
+[tool.setuptools]
+packages = ["zt_langgraph"]

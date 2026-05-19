@@ -226,6 +226,13 @@ The root `package.json` exists for DAAL deployment and Web3 helper tooling. The 
 
 Python adapter modules in this repository are source-level integration examples and tests. Application developers should use [zt-adapter-hello-world](https://github.com/oscarmackjr-twg/zt-adapter-hello-world) as the SDK-facing starter until separately versioned packages are published.
 
+For local LangGraph adapter development, install the Python package metadata in
+editable mode from the repository root:
+
+```bash
+python -m pip install -e .
+```
+
 ## Publishing Guardrails
 
 Before pushing or publishing:
