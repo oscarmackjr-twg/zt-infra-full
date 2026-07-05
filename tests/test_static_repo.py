@@ -12,6 +12,16 @@ def test_required_files_exist():
         "scripts/preflight.sh",
         "scripts/deploy.sh",
         "scripts/policy-scan.sh",
+        "scripts/windows/ZtCommon.ps1",
+        "scripts/windows/Test-ZtPreflight.ps1",
+        "scripts/windows/New-ZtTailscaleSecret.ps1",
+        "scripts/windows/Invoke-ZtStatic.ps1",
+        "scripts/windows/Invoke-ZtPolicy.ps1",
+        "scripts/windows/Invoke-ZtDeploy.ps1",
+        "scripts/windows/Invoke-ZtLive.ps1",
+        "scripts/windows/Get-ZtLogs.ps1",
+        "scripts/windows/Remove-ZtDeployment.ps1",
+        "docs/windows-poc/AWS_POWERSHELL_POC.md",
         "zt_langgraph/client.py",
         "zt_langgraph/nodes.py",
         "zt_openai/assistants.py",
@@ -557,3 +567,38 @@ def test_fetch_logs_avoids_eval_and_uses_ssm_send_command():
     assert "describe-instance-information" in script
     assert "aws ssm send-command" in script
     assert "aws ssm wait command-executed" in script
+
+
+def test_windows_powershell_operator_scripts_are_wired():
+    scripts = {
+        path.name: path.read_text()
+        for path in (ROOT / "scripts/windows").glob("*.ps1")
+    }
+    required = {
+        "ZtCommon.ps1",
+        "Test-ZtPreflight.ps1",
+        "New-ZtTailscaleSecret.ps1",
+        "Invoke-ZtStatic.ps1",
+        "Invoke-ZtPolicy.ps1",
+        "Invoke-ZtDeploy.ps1",
+        "Invoke-ZtLive.ps1",
+        "Get-ZtLogs.ps1",
+        "Remove-ZtDeployment.ps1",
+    }
+    assert required <= set(scripts)
+    assert "Set-ZtAwsEnvironment" in scripts["ZtCommon.ps1"]
+    assert "Assert-ZtTailscaleAuthKey" in scripts["ZtCommon.ps1"]
+    assert '"sts" "get-caller-identity"' in scripts["Test-ZtPreflight.ps1"]
+    assert '"secretsmanager" "create-secret"' in scripts["Test-ZtPreflight.ps1"]
+    assert '"secretsmanager" "put-secret-value"' in scripts["New-ZtTailscaleSecret.ps1"]
+    assert 'terraform "apply" "-auto-approve"' in scripts["Invoke-ZtDeploy.ps1"]
+    assert "tests/test_live_integration.py" in scripts["Invoke-ZtLive.ps1"]
+    assert "AWS-RunShellScript" in scripts["Get-ZtLogs.ps1"]
+    assert "command-executed" in scripts["Get-ZtLogs.ps1"]
+    assert "zt-verify.json" in scripts["Get-ZtLogs.ps1"]
+    assert "ConfirmDestroy" in scripts["Remove-ZtDeployment.ps1"]
+
+    runbook = (ROOT / "docs/windows-poc/AWS_POWERSHELL_POC.md").read_text()
+    assert "without WSL2" in runbook
+    assert "AWS CLI v2" in runbook
+    assert "nono_wfp" in runbook
