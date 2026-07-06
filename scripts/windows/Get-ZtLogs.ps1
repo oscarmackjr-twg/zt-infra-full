@@ -45,11 +45,19 @@ function Wait-ZtSsmOnline {
             "--query", "InstanceInformationList[0].PingStatus",
             "--output", "text"
         )
-        $output = & aws @ssmArgs 2>&1
+        $oldEap = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try {
+            $output = & aws @ssmArgs 2>&1
+        }
+        finally {
+            $ErrorActionPreference = $oldEap
+        }
         if ($LASTEXITCODE -ne 0) {
             throw "aws ssm describe-instance-information failed with exit code ${LASTEXITCODE}: $output"
         }
-        $ping = ($output -join [Environment]::NewLine).Trim()
+        $stdout = $output | Where-Object { $_ -is [string] }
+        $ping = ($stdout -join [Environment]::NewLine).Trim()
         if ($ping -eq "Online") {
             return
         }
