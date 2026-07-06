@@ -16,9 +16,14 @@ Assert-ZtSecretName $SecretName
 Assert-ZtTailscaleAuthKey $AuthKey
 
 $exists = $true
-& aws secretsmanager describe-secret --secret-id $SecretName --profile $env:AWS_PROFILE --region $env:AWS_REGION *> $null
+$errorOutput = & aws secretsmanager describe-secret --secret-id $SecretName --profile $env:AWS_PROFILE --region $env:AWS_REGION 2>&1
 if ($LASTEXITCODE -ne 0) {
-    $exists = $false
+    if ($errorOutput -match "ResourceNotFoundException") {
+        $exists = $false
+    }
+    else {
+        throw "aws secretsmanager describe-secret failed with exit code ${LASTEXITCODE}: $errorOutput"
+    }
 }
 
 if ($exists) {

@@ -37,16 +37,19 @@ if ([string]::IsNullOrWhiteSpace($InstanceId)) {
 
 function Wait-ZtSsmOnline {
     for ($n = 1; $n -le $SsmWaitAttempts; $n++) {
-        $ping = ""
-        $output = & aws ssm describe-instance-information `
-            --profile $env:AWS_PROFILE `
-            --region $env:AWS_REGION `
-            --filters "Key=InstanceIds,Values=$InstanceId" `
-            --query "InstanceInformationList[0].PingStatus" `
-            --output text 2>$null
-        if ($LASTEXITCODE -eq 0) {
-            $ping = ($output -join "`n").Trim()
+        $ssmArgs = @(
+            "ssm", "describe-instance-information",
+            "--profile", $env:AWS_PROFILE,
+            "--region", $env:AWS_REGION,
+            "--filters", "Key=InstanceIds,Values=$InstanceId",
+            "--query", "InstanceInformationList[0].PingStatus",
+            "--output", "text"
+        )
+        $output = & aws @ssmArgs 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "aws ssm describe-instance-information failed with exit code ${LASTEXITCODE}: $output"
         }
+        $ping = ($output -join [Environment]::NewLine).Trim()
         if ($ping -eq "Online") {
             return
         }
@@ -65,6 +68,7 @@ function Invoke-ZtSsmShellCommand {
     )
 
     $parametersPath = Join-Path ([System.IO.Path]::GetTempPath()) "zt-ssm-parameters-$([Guid]::NewGuid().ToString('N')).json"
+    $parametersUri = "file://" + $parametersPath.Replace('\', '/')
     try {
         @{ commands = @($Command) } | ConvertTo-Json -Compress | Set-Content -Path $parametersPath -Encoding ascii
         $commandId = Invoke-ZtAwsText @(
@@ -73,7 +77,7 @@ function Invoke-ZtSsmShellCommand {
             "--region", $env:AWS_REGION,
             "--instance-ids", $InstanceId,
             "--document-name", "AWS-RunShellScript",
-            "--parameters", "file://$parametersPath",
+            "--parameters", $parametersUri,
             "--query", "Command.CommandId",
             "--output", "text"
         )
