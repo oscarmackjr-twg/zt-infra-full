@@ -151,7 +151,8 @@ Expected results:
 6. Optionally verify process-level WFP blocking with a simple network client:
 
 ```powershell
-nono run --workspace $ws --block-net -- C:\Windows\System32\ping.exe -n 1 1.1.1.1
+$pingExe = Join-Path $env:SystemRoot "System32\ping.exe"
+nono run --workspace $ws --block-net -- $pingExe -n 1 1.1.1.1
 "EXIT:$LASTEXITCODE"
 ```
 
