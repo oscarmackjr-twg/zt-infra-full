@@ -25,13 +25,21 @@ Assert-ZtSecretName $secretName
 Invoke-ZtNative aws "sts" "get-caller-identity" "--profile" $env:AWS_PROFILE "--region" $env:AWS_REGION | Out-Null
 
 $secretExists = $true
-$errorOutput = & aws secretsmanager describe-secret --secret-id $secretName --profile $env:AWS_PROFILE --region $env:AWS_REGION 2>&1
+$oldEap = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+try {
+    $errorOutput = & aws secretsmanager describe-secret --secret-id $secretName --profile $env:AWS_PROFILE --region $env:AWS_REGION 2>&1
+}
+finally {
+    $ErrorActionPreference = $oldEap
+}
 if ($LASTEXITCODE -ne 0) {
-    if ($errorOutput -match "ResourceNotFoundException") {
+    $errorString = ($errorOutput -join [Environment]::NewLine)
+    if ($errorString -match "ResourceNotFoundException") {
         $secretExists = $false
     }
     else {
-        throw "aws secretsmanager describe-secret failed with exit code ${LASTEXITCODE}: $errorOutput"
+        throw "aws secretsmanager describe-secret failed with exit code ${LASTEXITCODE}: $errorString"
     }
 }
 
