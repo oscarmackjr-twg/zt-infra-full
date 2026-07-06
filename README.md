@@ -119,6 +119,18 @@ The deployed host should produce:
 - active `zt-provisioner`
 - no public inbound security group rules
 
+Windows operators can use the native PowerShell runbook for the same flow:
+
+- [docs/windows-poc/AWS_POWERSHELL_POC.md](docs/windows-poc/AWS_POWERSHELL_POC.md)
+
+That runbook also records the current Windows `nono` client verification path.
+After the AWS backend is healthy, a Windows endpoint joined to the same tailnet
+can verify private Tailscale reachability, `nono-wfp-service` health, confined
+process launch, and `nono why` policy reasoning for outbound network allowed
+vs. `--block-net` denied. Domain-specific `--allow-domain` proxy filtering is
+not implemented for Windows supervised execution in `nono v0.66.1`; unsupported
+proxy-filter flows fail closed.
+
 ## Local Provisioner
 
 You can run the Node service locally for API development:
@@ -158,7 +170,7 @@ Terraform creates:
 - generated EC2 key pair written under `out/`
 - Ubuntu 24.04 EC2 instance
 
-Production operators should replace local Terraform state with S3 and DynamoDB locking before shared use.
+Production operators should replace local Terraform state with an S3 backend before shared use. Current Terraform S3 backends should use S3 lockfiles (`use_lockfile = true`) rather than deprecated DynamoDB locking.
 
 ## Agent Integrations
 
