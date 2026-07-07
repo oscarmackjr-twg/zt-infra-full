@@ -29,7 +29,13 @@ def bootstrap_prelude(tmp_path):
 
 def run_bash(script):
     bash = os.environ.get("BASH_EXE", "bash")
-    return subprocess.run([bash, str(script)], text=True, capture_output=True, check=False)
+    return subprocess.run(
+        [bash, str(script)],
+        capture_output=True,
+        check=False,
+        encoding="utf-8",
+        errors="replace",
+    )
 
 
 def tailscale_serve_detector(tmp_path):

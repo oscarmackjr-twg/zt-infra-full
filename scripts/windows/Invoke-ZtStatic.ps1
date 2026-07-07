@@ -20,9 +20,8 @@ $env:TMP = $pytestTempDir
 $env:TEMP = $pytestTempDir
 $env:PYTHONUTF8 = "1"
 $gitBin = "C:\Program Files\Git\bin"
-$gitUsrBin = "C:\Program Files\Git\usr\bin"
-if ((Test-Path -LiteralPath $gitBin) -and (Test-Path -LiteralPath $gitUsrBin)) {
-    $env:PATH = "$gitBin;$gitUsrBin;$env:PATH"
+if (Test-Path -LiteralPath $gitBin) {
+    $env:PATH = "$gitBin;$env:PATH"
     $env:BASH_EXE = Join-Path $gitBin "bash.exe"
 }
 
