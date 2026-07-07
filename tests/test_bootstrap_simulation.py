@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import textwrap
 from pathlib import Path
@@ -27,7 +28,8 @@ def bootstrap_prelude(tmp_path):
 
 
 def run_bash(script):
-    return subprocess.run(["bash", str(script)], text=True, capture_output=True, check=False)
+    bash = os.environ.get("BASH_EXE", "bash")
+    return subprocess.run([bash, str(script)], text=True, capture_output=True, check=False)
 
 
 def tailscale_serve_detector(tmp_path):

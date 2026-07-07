@@ -1,7 +1,7 @@
 SHELL := /usr/bin/env bash
 AWS_PROFILE ?= default
 AWS_REGION ?= us-east-2
-PROJECT_NAME ?= zt-infra
+PROJECT_NAME ?= zt-infra-v2
 TAILSCALE_SECRET_NAME ?= $(PROJECT_NAME)/tailscale-auth-key
 PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 TF_VAR_aws_profile ?= $(AWS_PROFILE)

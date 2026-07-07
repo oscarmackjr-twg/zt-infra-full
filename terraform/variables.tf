@@ -33,7 +33,7 @@ variable "aws_region" {
 
 variable "project_name" {
   type        = string
-  default     = "zt-infra"
+  default     = "zt-infra-v2"
   description = "Name prefix and common tag value."
 
   validation {

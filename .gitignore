@@ -21,6 +21,7 @@ cdp_wallet_secret.txt
 *.tfstate.*
 *.tfvars
 !terraform/terraform.tfvars.example
+terraform/backend.hcl
 crash.log
 crash.*.log
 

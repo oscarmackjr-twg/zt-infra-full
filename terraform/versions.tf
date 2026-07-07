@@ -16,6 +16,5 @@ terraform {
     }
   }
 
-  # Optional future remote backend. Keep disabled for MVP dark-factory local state.
-  # backend "s3" {}
+  backend "s3" {}
 }
