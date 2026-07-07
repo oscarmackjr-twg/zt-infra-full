@@ -17,7 +17,7 @@ if (-not (Test-Path $backendConfig)) {
 Missing terraform/backend.hcl.
 
 Create it from terraform/backend.hcl.example with this deployment's S3
-state bucket and DynamoDB lock table before running destroy.
+state bucket before running destroy. The backend uses S3 lockfiles for locking.
 "@
 }
 
@@ -32,7 +32,7 @@ Run:
 
 Push-Location $terraformDir
 try {
-    Invoke-ZtNative terraform "init" "-backend-config=backend.hcl"
+    Invoke-ZtNative terraform "init" "-reconfigure" "-backend-config=backend.hcl"
     Invoke-ZtNative terraform "destroy" "-auto-approve"
 }
 finally {

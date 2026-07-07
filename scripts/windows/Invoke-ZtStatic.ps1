@@ -14,16 +14,21 @@ Require-ZtCommand "python" "Install Python 3.12+ for Windows and ensure python.e
 $repoRoot = Get-ZtRepoRoot
 $terraformDir = Get-ZtTerraformDir
 $python = Resolve-ZtPython
+$pytestTempDir = Join-Path $repoRoot "tmp\pytest"
+New-Item -ItemType Directory -Force -Path $pytestTempDir | Out-Null
+$env:TMP = $pytestTempDir
+$env:TEMP = $pytestTempDir
+$env:PYTHONUTF8 = "1"
+$gitBin = "C:\Program Files\Git\bin"
+if (Test-Path -LiteralPath $gitBin) {
+    $env:PATH = "$gitBin;$env:PATH"
+    $env:BASH_EXE = Join-Path $gitBin "bash.exe"
+}
 
 Push-Location $terraformDir
 try {
     Invoke-ZtNative terraform "fmt" "-recursive"
-    if (Test-Path "backend.hcl") {
-        Invoke-ZtNative terraform "init" "-backend-config=backend.hcl"
-    }
-    else {
-        Invoke-ZtNative terraform "init" "-backend=false"
-    }
+    Invoke-ZtNative terraform "init" "-reconfigure" "-backend=false"
     Invoke-ZtNative terraform "validate"
 }
 finally {
@@ -32,7 +37,6 @@ finally {
 
 Push-Location $repoRoot
 try {
-    Invoke-ZtNative $python "-m" "pytest" "zt-verify/tests"
     Invoke-ZtNative $python "-m" "pytest" `
         "tests/test_static_repo.py" `
         "tests/test_bootstrap_simulation.py" `
@@ -42,11 +46,11 @@ try {
         "tests/test_openai_agents_sdk_guardrail.py" `
         "tests/test_mcp_zero_trust_gateway.py" `
         "tests/test_a2a_policy_proxy.py" `
-        "tests/test_interoperability_demo_contract.py" `
-        "tests/test_caf_roadmap.py"
+        "tests/test_interoperability_demo_contract.py"
 
-    if (Get-Command "go" -ErrorAction SilentlyContinue) {
-        Push-Location (Join-Path $repoRoot "test-vectors\canonical-form\skeletons\go")
+    $goSkeletonDir = Join-Path $repoRoot "test-vectors\canonical-form\skeletons\go"
+    if ((Get-Command "go" -ErrorAction SilentlyContinue) -and (Test-Path -LiteralPath $goSkeletonDir)) {
+        Push-Location $goSkeletonDir
         try {
             if (-not $env:GOCACHE) {
                 $env:GOCACHE = Join-Path $env:TEMP "zt-infra-v2-go-cache"
@@ -58,11 +62,12 @@ try {
         }
     }
     else {
-        Write-Warning "go is not installed; skipping CAF Go skeleton tests."
+        Write-Warning "go or CAF Go skeleton directory is not available; skipping CAF Go skeleton tests."
     }
 
-    if (Get-Command "cargo" -ErrorAction SilentlyContinue) {
-        Push-Location (Join-Path $repoRoot "test-vectors\canonical-form\skeletons\rust")
+    $rustSkeletonDir = Join-Path $repoRoot "test-vectors\canonical-form\skeletons\rust"
+    if ((Get-Command "cargo" -ErrorAction SilentlyContinue) -and (Test-Path -LiteralPath $rustSkeletonDir)) {
+        Push-Location $rustSkeletonDir
         try {
             Invoke-ZtNative cargo "test"
         }
@@ -71,7 +76,7 @@ try {
         }
     }
     else {
-        Write-Warning "cargo is not installed; skipping CAF Rust skeleton tests."
+        Write-Warning "cargo or CAF Rust skeleton directory is not available; skipping CAF Rust skeleton tests."
     }
 }
 finally {

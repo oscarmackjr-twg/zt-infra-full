@@ -56,7 +56,7 @@ function Set-ZtAwsEnvironment {
         [string] $AwsProfile = $env:AWS_PROFILE,
         [string] $AwsRegion = $(if ($env:AWS_REGION) { $env:AWS_REGION } else { "us-east-2" }),
         [string] $AllowedAwsAccountId = $env:TF_VAR_allowed_aws_account_id,
-        [string] $ProjectName = $(if ($env:PROJECT_NAME) { $env:PROJECT_NAME } else { "zt-infra" }),
+        [string] $ProjectName = $(if ($env:PROJECT_NAME) { $env:PROJECT_NAME } else { "zt-infra-v2" }),
         [string] $TailscaleSecretName = $env:TAILSCALE_SECRET_NAME
     )
 
